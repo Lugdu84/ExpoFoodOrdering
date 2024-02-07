@@ -9,7 +9,7 @@ const sizes = ['S', 'M', 'L', 'XL'];
 
 const ProductDetailsScreen = () => {
 	const { id } = useLocalSearchParams();
-	const [selectedSize, setSelectedSize] = useState(sizes[0]);
+	const [selectedSize, setSelectedSize] = useState(sizes[1]);
 
 	const product = products.find((p) => p.id.toString() === id);
 
