@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { View } from '@/src/components/Themed';
-import products from '@/assets/data/products';
+import { View } from '@components/Themed';
+import products from '@assets/data/products';
 
-import { ProductListItem } from '@/src/components/ProductListItem';
+import ProductListItem from '@/components/ProductListItem';
 
 const product = products[0];
 
