@@ -3,9 +3,7 @@ import { View, Text } from './Themed';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 import { Link } from 'expo-router';
-
-export const defaultPizzaImage =
-	'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
+import { defaultPizzaImage } from '@/constants/Images';
 
 type ProductListItemProps = {
 	product: Product;
