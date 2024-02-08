@@ -1,8 +1,8 @@
 import { Product } from '@/types';
-import { View, Text } from './Themed';
+import { Text } from './Themed';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
-import { Link } from 'expo-router';
+import { Link, useSegments } from 'expo-router';
 import { defaultPizzaImage } from '@/constants/Images';
 
 type ProductListItemProps = {
@@ -10,9 +10,13 @@ type ProductListItemProps = {
 };
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
+	const segments = useSegments();
+
 	return (
 		<Link
-			href={`/menu/${product.id}`}
+			//@ts-ignore
+			// TODO: Fix error in segment route
+			href={`/${segments[0]}/menu/${product.id}`}
 			asChild>
 			<Pressable style={styles.container}>
 				<Image
