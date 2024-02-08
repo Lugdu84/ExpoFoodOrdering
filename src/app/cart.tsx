@@ -6,6 +6,8 @@ import CardListItem from '@/components/CardListItem';
 const CartScreen = () => {
 	const { items } = useCart();
 
+	console.log(items);
+
 	return (
 		<View>
 			<FlatList

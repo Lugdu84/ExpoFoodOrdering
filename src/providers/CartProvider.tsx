@@ -1,14 +1,19 @@
 import { CartItem, PizzaSize, Product } from '@/types';
 import { PropsWithChildren, createContext, useContext, useState } from 'react';
+import { randomUUID } from 'expo-crypto';
+
+type Quantity = 1 | -1;
 
 type CartType = {
 	items: CartItem[];
 	addItem: (product: Product, size: PizzaSize) => void;
+	updateQuantity: (itemId: string, amount: Quantity) => void;
 };
 
 const CartContext = createContext<CartType>({
 	items: [],
 	addItem: () => {},
+	updateQuantity: () => {},
 });
 
 const CartProvider = ({ children }: PropsWithChildren) => {
@@ -17,7 +22,7 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 	const addItem = (product: Product, size: PizzaSize) => {
 		// if already in cart, increase quantity
 		const newCardItem: CartItem = {
-			id: '1', // generate
+			id: randomUUID(),
 			product_id: product.id,
 			product,
 			quantity: 1,
@@ -26,9 +31,19 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 		setItems([...items, newCardItem]);
 	};
 
-	// update quantity
+	const updateQuantity = (itemId: string, amount: Quantity) => {
+		const newItems = items
+			.map((item) => {
+				if (item.id === itemId) {
+					return { ...item, quantity: item.quantity + amount };
+				}
+				return item;
+			})
+			.filter((item) => item.quantity > 0);
+		setItems(newItems);
+	};
 	return (
-		<CartContext.Provider value={{ items, addItem }}>
+		<CartContext.Provider value={{ items, addItem, updateQuantity }}>
 			{children}
 		</CartContext.Provider>
 	);
