@@ -3,7 +3,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { useState } from 'react';
 import Button from '@/components/Button';
 import Colors from '@/constants/Colors';
-import { Link } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 
 const SignInScreen = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -11,6 +11,7 @@ const SignInScreen = () => {
 	const [email, setEmail] = useState('');
 	return (
 		<View style={styles.container}>
+			<Stack.Screen options={{ title: 'Sign In' }} />
 			<View style={styles.inputView}>
 				<Text style={styles.inputLabel}>Email :</Text>
 				<TextInput
