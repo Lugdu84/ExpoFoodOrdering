@@ -9,6 +9,9 @@
 		"web": "expo start --web",
 		"test": "jest --watch-all"
 	},
+	"jest": {
+		"preset": "react-native"
+	},
 	"dependencies": {
 		"@expo/vector-icons": "^14.0.0",
 		"@react-navigation/native": "^6.0.2",
