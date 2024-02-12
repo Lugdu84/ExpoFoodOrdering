@@ -10,7 +10,7 @@
 		"test": "jest --watch-all"
 	},
 	"jest": {
-		"preset": "react-native"
+		"preset": "jest-expo"
 	},
 	"dependencies": {
 		"@expo/vector-icons": "^14.0.0",
