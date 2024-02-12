@@ -7,6 +7,8 @@ import { Link } from 'expo-router';
 
 const SignInScreen = () => {
 	const [showPassword, setShowPassword] = useState(false);
+	const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
 	return (
 		<View style={styles.container}>
 			<View style={styles.inputView}>
@@ -15,6 +17,7 @@ const SignInScreen = () => {
 					style={styles.emailInput}
 					placeholder="test@test.fr"
 					keyboardType="email-address"
+					onChangeText={setEmail}
 				/>
 			</View>
 			<View style={styles.inputView}>
@@ -23,6 +26,7 @@ const SignInScreen = () => {
 					<TextInput
 						style={styles.secureInput}
 						secureTextEntry={!showPassword}
+						onChangeText={setPassword}
 					/>
 					<FontAwesome6
 						onPress={() => setShowPassword(!showPassword)}
