@@ -26,7 +26,7 @@ const SignInScreen = () => {
 					/>
 					<FontAwesome6
 						onPress={() => setShowPassword(!showPassword)}
-						name="eye-slash"
+						name={showPassword ? 'eye' : 'eye-slash'}
 						size={20}
 						color="black"
 						style={{ marginRight: 5 }}
@@ -37,8 +37,8 @@ const SignInScreen = () => {
 			<Button text="Sign In" />
 			<Link
 				href={'/sign-up'}
-				asChild>
-				<Text style={styles.textButton}>Create an account</Text>
+				style={styles.textButton}>
+				Create an account
 			</Link>
 		</View>
 	);
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 	},
 	inputView: {
-		marginBottom: 20,
 		gap: 5,
 	},
 	inputLabel: {
