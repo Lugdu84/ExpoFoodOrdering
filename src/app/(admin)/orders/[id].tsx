@@ -20,12 +20,13 @@ const OrderDetailScreen = () => {
 	}
 	return (
 		<View style={styles.container}>
-			<Stack.Screen options={{ title: `Order #${order.id}` }} />
-			<OrderListItem order={order} />
+			<Stack.Screen options={{ title: `Order test #${order.id}` }} />
+
 			<FlatList
 				data={order.order_items}
 				contentContainerStyle={{ gap: 10 }}
 				renderItem={({ item }) => <OrderItemListItem orderItem={item} />}
+				ListHeaderComponent={<OrderListItem order={order} />}
 			/>
 		</View>
 	);
