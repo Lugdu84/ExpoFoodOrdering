@@ -1,15 +1,31 @@
-import { View, StyleSheet, TextInput, Text } from 'react-native';
+import { View, StyleSheet, TextInput, Text, Alert } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useState } from 'react';
 import Button from '@/components/Button';
 import Colors from '@/constants/Colors';
 import { Link, Stack } from 'expo-router';
+import { supabase } from '@/lib/supabase';
 
 const SignUpScreen = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [email, setEmail] = useState('');
+	const [loading, setLoading] = useState(false);
+
+	const handleSignUp = async () => {
+		if (password !== confirmPassword) {
+			Alert.alert('Error', 'Passwords do not match');
+			return;
+		}
+		setLoading(true);
+		const { error } = await supabase.auth.signUp({
+			email,
+			password,
+		});
+		if (error) Alert.alert('Error', error.message);
+		setLoading(false);
+	};
 	return (
 		<View style={styles.container}>
 			<Stack.Screen options={{ title: 'Sign Up' }} />
@@ -20,6 +36,8 @@ const SignUpScreen = () => {
 					placeholder="test@test.fr"
 					keyboardType="email-address"
 					onChangeText={setEmail}
+					value={email}
+					autoCapitalize="none"
 				/>
 			</View>
 			<View style={styles.inputView}>
@@ -29,6 +47,7 @@ const SignUpScreen = () => {
 						style={styles.secureInput}
 						secureTextEntry={!showPassword}
 						onChangeText={setPassword}
+						value={password}
 					/>
 					<FontAwesome6
 						onPress={() => setShowPassword(!showPassword)}
@@ -46,6 +65,7 @@ const SignUpScreen = () => {
 						style={styles.secureInput}
 						secureTextEntry={!showPassword}
 						onChangeText={setConfirmPassword}
+						value={confirmPassword}
 					/>
 					<FontAwesome6
 						onPress={() => setShowPassword(!showPassword)}
@@ -57,7 +77,11 @@ const SignUpScreen = () => {
 				</View>
 			</View>
 
-			<Button text="Create account" />
+			<Button
+				disabled={loading}
+				text={loading ? 'Creating account...' : 'Create account'}
+				onPress={handleSignUp}
+			/>
 			<Link
 				href={'/sign-in'}
 				style={styles.textButton}>

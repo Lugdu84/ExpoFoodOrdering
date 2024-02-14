@@ -1,14 +1,26 @@
-import { View, StyleSheet, TextInput, Text } from 'react-native';
+import { View, StyleSheet, TextInput, Text, Alert } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useState } from 'react';
 import Button from '@/components/Button';
 import Colors from '@/constants/Colors';
 import { Link, Stack } from 'expo-router';
+import { supabase } from '@/lib/supabase';
 
 const SignInScreen = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [password, setPassword] = useState('');
 	const [email, setEmail] = useState('');
+	const [loading, setLoading] = useState(false);
+
+	const handleSignIn = async () => {
+		setLoading(true);
+		const { error } = await supabase.auth.signInWithPassword({
+			email,
+			password,
+		});
+		if (error) Alert.alert('Error', error.message);
+		setLoading(false);
+	};
 	return (
 		<View style={styles.container}>
 			<Stack.Screen options={{ title: 'Sign In' }} />
@@ -19,6 +31,8 @@ const SignInScreen = () => {
 					placeholder="test@test.fr"
 					keyboardType="email-address"
 					onChangeText={setEmail}
+					value={email}
+					autoCapitalize="none"
 				/>
 			</View>
 			<View style={styles.inputView}>
@@ -28,6 +42,7 @@ const SignInScreen = () => {
 						style={styles.secureInput}
 						secureTextEntry={!showPassword}
 						onChangeText={setPassword}
+						value={password}
 					/>
 					<FontAwesome6
 						onPress={() => setShowPassword(!showPassword)}
@@ -39,7 +54,11 @@ const SignInScreen = () => {
 				</View>
 			</View>
 
-			<Button text="Sign In" />
+			<Button
+				text={loading ? 'Sign In ...' : 'Sign In'}
+				onPress={handleSignIn}
+				disabled={loading}
+			/>
 			<Link
 				href={'/sign-up'}
 				style={styles.textButton}>
