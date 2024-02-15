@@ -22,9 +22,11 @@ const ProductDetailsScreen = () => {
 	const { addItem } = useCart();
 	const router = useRouter();
 
-	const { product, error, isLoading } = useProduct(
-		parseInt(typeof id === 'string' ? id : id[0])
-	);
+	const {
+		data: product,
+		error,
+		isLoading,
+	} = useProduct(parseInt(typeof id === 'string' ? id : id[0]));
 
 	const addToCart = () => {
 		if (!product) return;

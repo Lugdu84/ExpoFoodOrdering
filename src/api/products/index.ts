@@ -21,11 +21,7 @@ export const useProductList = () => {
 };
 
 export const useProduct = (id: number) => {
-	const {
-		data: product,
-		error,
-		isLoading,
-	} = useQuery<Product>({
+	return useQuery<Product>({
 		queryKey: ['product', id],
 		queryFn: async () => {
 			const { data, error } = await supabase
@@ -39,5 +35,4 @@ export const useProduct = (id: number) => {
 			return data;
 		},
 	});
-	return { product, error, isLoading };
 };
