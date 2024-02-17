@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet, TextInput, Image, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import { defaultPizzaImage } from '@/constants/Images';
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useInsertProduct, useProduct, useUpdateProduct } from '@/api/products';
+import { getId } from '@/lib/products';
 
 const CreateProductScreen = () => {
 	const [name, setName] = useState('');
@@ -12,10 +14,23 @@ const CreateProductScreen = () => {
 	const [errors, setErrors] = useState('');
 	const [image, setImage] = useState<string | null>(null);
 	const { id } = useLocalSearchParams();
+	const router = useRouter();
 
 	const isUpdating = !!id;
 
+	const { mutate: insertProduct } = useInsertProduct();
+	const { mutate: updateProduct } = useUpdateProduct();
+
+	const { data: UpdatingProduct } = useProduct(id ? getId(id) : undefined);
+
 	const textProduct = isUpdating ? 'Update' : 'Create';
+
+	useEffect(() => {
+		if (isUpdating && UpdatingProduct) {
+			setName(UpdatingProduct.name);
+			setPrice(UpdatingProduct.price.toString());
+		}
+	}, []);
 
 	const handleSetPrice = (text: string) => {
 		const priceWithDot = text.replace(',', '.');
@@ -44,18 +59,35 @@ const CreateProductScreen = () => {
 	};
 	const onCreate = () => {
 		if (!validateInput()) return;
-		console.warn('Create Product', name, price);
 
-		// Save the product to the database
-		resetFields();
+		insertProduct(
+			{ name, price: parseFloat(price), image },
+			{
+				onSuccess: () => {
+					resetFields();
+					router.back();
+				},
+			}
+		);
 	};
 
 	const onUpdate = () => {
 		if (!validateInput()) return;
-		console.warn('Update Product', name, price);
 
-		// Save the product to the database
-		resetFields();
+		updateProduct(
+			{
+				id: getId(id),
+				name,
+				price: parseFloat(price),
+				image,
+			},
+			{
+				onSuccess: () => {
+					resetFields();
+					router.back();
+				},
+			}
+		);
 	};
 
 	const onSubmit = () => {

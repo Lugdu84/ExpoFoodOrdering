@@ -15,6 +15,7 @@ import { PizzaSize } from '@/types';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import { useProduct } from '@/api/products';
+import { getId } from '@/lib/products';
 
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL'];
 
@@ -24,11 +25,7 @@ const ProductDetailsScreen = () => {
 	const { addItem } = useCart();
 	const router = useRouter();
 
-	const {
-		data: product,
-		error,
-		isLoading,
-	} = useProduct(parseInt(typeof id === 'string' ? id : id[0]));
+	const { data: product, error, isLoading } = useProduct(getId(id));
 
 	if (isLoading) {
 		return <ActivityIndicator />;
