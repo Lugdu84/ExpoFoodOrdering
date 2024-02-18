@@ -5,7 +5,12 @@ import { defaultPizzaImage } from '@/constants/Images';
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useInsertProduct, useProduct, useUpdateProduct } from '@/api/products';
+import {
+	useDeleteProduct,
+	useInsertProduct,
+	useProduct,
+	useUpdateProduct,
+} from '@/api/products';
 import { getId } from '@/lib/products';
 
 const CreateProductScreen = () => {
@@ -20,6 +25,7 @@ const CreateProductScreen = () => {
 
 	const { mutate: insertProduct } = useInsertProduct();
 	const { mutate: updateProduct } = useUpdateProduct();
+	const { mutate: deleteProduct } = useDeleteProduct();
 
 	const { data: UpdatingProduct } = useProduct(id ? getId(id) : undefined);
 
@@ -114,7 +120,10 @@ const CreateProductScreen = () => {
 	};
 
 	const handleDelete = () => {
-		console.warn('DELETE', id);
+		if (!id) return;
+		deleteProduct(getId(id), {
+			onSuccess: () => router.replace('/(admin)/menu'),
+		});
 	};
 
 	const confirmDelete = () => {
