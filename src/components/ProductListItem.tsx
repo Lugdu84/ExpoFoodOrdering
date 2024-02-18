@@ -1,9 +1,9 @@
-import { Product } from '@/types';
 import { Text } from './Themed';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 import { Link, useSegments } from 'expo-router';
 import { defaultPizzaImage } from '@/constants/Images';
+import { Product } from '@/types';
 
 type ProductListItemProps = {
 	product: Product;

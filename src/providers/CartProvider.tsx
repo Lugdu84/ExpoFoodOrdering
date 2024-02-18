@@ -1,12 +1,13 @@
 import { CartItem, PizzaSize, Product } from '@/types';
 import { PropsWithChildren, createContext, useContext, useState } from 'react';
 import { randomUUID } from 'expo-crypto';
+import { Tables } from '@/supabase';
 
 type Quantity = 1 | -1;
 
 type CartType = {
 	items: CartItem[];
-	addItem: (product: Product, size: PizzaSize) => void;
+	addItem: (product: Tables<'products'>, size: PizzaSize) => void;
 	updateQuantity: (itemId: string, amount: Quantity) => void;
 	total: number;
 };

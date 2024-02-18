@@ -21,9 +21,13 @@ export const useProductList = () => {
 };
 
 export const useProduct = (id: number | undefined) => {
+	// if (!id) return undefined;
 	return useQuery<Product>({
 		queryKey: ['product', id],
 		queryFn: async () => {
+			if (!id) {
+				throw new Error('No id provided');
+			}
 			const { data, error } = await supabase
 				.from('products')
 				.select('*')
@@ -40,7 +44,7 @@ export const useProduct = (id: number | undefined) => {
 export const useInsertProduct = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		async mutationFn(data: Omit<Product, 'id'>) {
+		async mutationFn(data: Omit<Product, 'id' | 'created_at'>) {
 			const { error } = await supabase
 				.from('products')
 				.insert({
@@ -65,7 +69,7 @@ export const useInsertProduct = () => {
 export const useUpdateProduct = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		async mutationFn({ id, ...update }: Product) {
+		async mutationFn({ id, ...update }: Omit<Product, 'created_at'>) {
 			const { data, error } = await supabase
 				.from('products')
 				.update(update)
