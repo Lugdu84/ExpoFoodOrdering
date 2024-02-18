@@ -1,6 +1,7 @@
 import { Tables } from './supabase';
 
 export type Product = Tables<'products'>;
+export type Order = Tables<'orders'>;
 
 export type PizzaSize = 'S' | 'M' | 'L' | 'XL';
 
@@ -21,15 +22,15 @@ export const OrderStatusList: OrderStatus[] = [
 
 export type OrderStatus = 'New' | 'Cooking' | 'Delivering' | 'Delivered';
 
-export type Order = {
-	id: number;
-	created_at: string;
-	total: number;
-	user_id: string;
-	status: OrderStatus;
+// export type Order = {
+// 	id: number;
+// 	created_at: string;
+// 	total: number;
+// 	user_id: string;
+// 	status: OrderStatus;
 
-	order_items?: OrderItem[];
-};
+// 	order_items?: OrderItem[];
+// };
 
 export type OrderItem = {
 	id: number;
