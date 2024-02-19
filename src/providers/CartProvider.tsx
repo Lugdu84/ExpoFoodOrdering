@@ -2,6 +2,8 @@ import { CartItem, PizzaSize, Product } from '@/types';
 import { PropsWithChildren, createContext, useContext, useState } from 'react';
 import { randomUUID } from 'expo-crypto';
 import { Tables } from '@/supabase';
+import { useInsertOrder } from '@/api/orders';
+import { useRouter, useSegments } from 'expo-router';
 
 type Quantity = 1 | -1;
 
@@ -10,6 +12,7 @@ type CartType = {
 	addItem: (product: Tables<'products'>, size: PizzaSize) => void;
 	updateQuantity: (itemId: string, amount: Quantity) => void;
 	total: number;
+	checkout: () => void;
 };
 
 const CartContext = createContext<CartType>({
@@ -17,10 +20,18 @@ const CartContext = createContext<CartType>({
 	addItem: () => {},
 	updateQuantity: () => {},
 	total: 0,
+	checkout: () => {},
 });
 
 const CartProvider = ({ children }: PropsWithChildren) => {
 	const [items, setItems] = useState<CartItem[]>([]);
+	const { mutate: insertOrder } = useInsertOrder();
+	const router = useRouter();
+	const segments = useSegments();
+
+	const clearCart = () => {
+		setItems([]);
+	};
 
 	const addItem = (product: Product, size: PizzaSize) => {
 		const existingItem = items.find(
@@ -56,8 +67,22 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 		(sum, item) => sum + item.product.price * item.quantity,
 		0
 	);
+
+	const checkout = () => {
+		insertOrder(
+			{ total },
+			{
+				onSuccess: (data) => {
+					clearCart();
+					// TODO: fix this, no back route and no hide Cart Page
+					router.push(`/(user)/orders/${data?.id}`);
+				},
+			}
+		);
+	};
 	return (
-		<CartContext.Provider value={{ items, addItem, updateQuantity, total }}>
+		<CartContext.Provider
+			value={{ items, addItem, updateQuantity, checkout, total }}>
 			{children}
 		</CartContext.Provider>
 	);

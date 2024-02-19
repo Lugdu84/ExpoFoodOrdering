@@ -6,7 +6,7 @@ import CardListItem from '@/components/CardListItem';
 import Button from '@/components/Button';
 
 const CartScreen = () => {
-	const { items, total } = useCart();
+	const { items, total, checkout } = useCart();
 
 	return (
 		<View style={styles.container}>
@@ -18,7 +18,7 @@ const CartScreen = () => {
 			<Text style={styles.total}>Total: ${total.toFixed(2)}</Text>
 			<Button
 				text="Checkout"
-				onPress={() => {}}
+				onPress={checkout}
 			/>
 			<StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
 		</View>
