@@ -2,6 +2,7 @@ import { Tables } from './supabase';
 
 export type Product = Tables<'products'>;
 export type Order = Tables<'orders'>;
+export type OrderItem = Tables<'order_items'>;
 
 export type PizzaSize = 'S' | 'M' | 'L' | 'XL';
 
@@ -32,14 +33,16 @@ export type OrderStatus = 'New' | 'Cooking' | 'Delivering' | 'Delivered';
 // 	order_items?: OrderItem[];
 // };
 
-export type OrderItem = {
-	id: number;
-	product_id: number;
-	products: Product;
-	order_id: number;
-	size: PizzaSize;
-	quantity: number;
-};
+// export type OrderItem = {
+// 	created_at: string;
+// 	id: number;
+// 	product_id: number;
+// 	products: Product | null;
+// 	order_id: number | null;
+// 	size: string;
+// 	quantity: number;
+// 	user_id: string | null;
+// };
 
 export type Profile = {
 	id: string;

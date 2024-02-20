@@ -38,11 +38,11 @@ export const useOrderList = () => {
 
 export const useOrderDetails = (id: number) => {
 	return useQuery({
-		queryKey: ['orders', id],
+		queryKey: ['order', id],
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from('orders')
-				.select('*')
+				.select('*, order_items(*, products(*))')
 				.eq('id', id)
 				.single();
 			if (error) {
@@ -77,6 +77,32 @@ export const useInsertOrder = () => {
 		},
 		onError: (error) => {
 			console.error('Error inserting order', error);
+		},
+	});
+};
+
+export const useUpdateOrder = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		async mutationFn({ id, status }: Pick<Order, 'id' | 'status'>) {
+			const { data, error } = await supabase
+				.from('orders')
+				.update({ status })
+				.eq('id', id)
+				.select();
+
+			if (error) {
+				throw error;
+			}
+			return data;
+		},
+		async onSuccess(_, { id }) {
+			await queryClient.invalidateQueries({ queryKey: ['orders'] });
+			await queryClient.invalidateQueries({ queryKey: ['order', id] });
+		},
+		onError(error) {
+			console.log(error);
 		},
 	});
 };

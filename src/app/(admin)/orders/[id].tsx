@@ -10,15 +10,16 @@ import React from 'react';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import OrderListItem from '@/components/OrderListItem';
 import OrderItemListItem from '@/components/OrderItemListItem';
-import { OrderStatusList } from '@/types';
+import { OrderStatus, OrderStatusList } from '@/types';
 import Colors from '@/constants/Colors';
-import { useOrderDetails } from '@/api/orders';
+import { useOrderDetails, useUpdateOrder } from '@/api/orders';
 import { getId } from '@/lib/products';
 
 const OrderDetailScreen = () => {
 	const { id } = useLocalSearchParams();
 
 	const { data: order, isLoading, error } = useOrderDetails(getId(id));
+	const { mutate: updateOrder } = useUpdateOrder();
 
 	if (isLoading) {
 		return <ActivityIndicator />;
@@ -36,6 +37,10 @@ const OrderDetailScreen = () => {
 			</View>
 		);
 	}
+
+	const handleUpdateStatus = (status: OrderStatus) => {
+		updateOrder({ id: order.id, status });
+	};
 	return (
 		<View style={styles.container}>
 			<Stack.Screen options={{ title: `Order #${order.id}` }} />
@@ -52,7 +57,7 @@ const OrderDetailScreen = () => {
 							{OrderStatusList.map((status) => (
 								<Pressable
 									key={status}
-									onPress={() => console.warn('Update status')}
+									onPress={() => handleUpdateStatus(status)}
 									style={{
 										borderColor: Colors.light.tint,
 										borderWidth: 1,

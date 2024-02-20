@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
-import { OrderItem } from '@/types';
+import { OrderItem, Product } from '@/types';
 import { defaultPizzaImage } from '@/constants/Images';
 import Colors from '@/constants/Colors';
 
 type OrderItemListItemProps = {
-	orderItem: OrderItem;
+	//FIXME: Whty Product | null ?
+	orderItem: { products: Product | null } & OrderItem;
 };
 
 const OrderItemListItem = ({ orderItem }: OrderItemListItemProps) => {
@@ -17,9 +18,9 @@ const OrderItemListItem = ({ orderItem }: OrderItemListItemProps) => {
 					source={{ uri: defaultPizzaImage }}
 				/>
 				<View style={styles.product}>
-					<Text style={styles.name}>{orderItem.products.name}</Text>
+					<Text style={styles.name}>{orderItem.products?.name}</Text>
 					<View style={styles.infoProduct}>
-						<Text style={styles.price}>${orderItem.products.price}</Text>
+						<Text style={styles.price}>${orderItem.products?.price}</Text>
 						<Text style={styles.size}>Size: {orderItem.size}</Text>
 					</View>
 				</View>
