@@ -27,7 +27,10 @@ export const useOrderList = () => {
 	return useQuery({
 		queryKey: ['orders'],
 		queryFn: async () => {
-			const { data, error } = await supabase.from('orders').select('*');
+			const { data, error } = await supabase
+				.from('orders')
+				.select('*')
+				.order('created_at', { ascending: false });
 			if (error) {
 				throw new Error(error.message);
 			}

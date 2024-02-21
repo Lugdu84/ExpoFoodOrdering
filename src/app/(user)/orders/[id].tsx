@@ -5,17 +5,20 @@ import {
 	FlatList,
 	ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import OrderListItem from '@/components/OrderListItem';
 import OrderItemListItem from '@/components/OrderItemListItem';
 import { useOrderDetails } from '@/api/orders';
 import { getId } from '@/lib/products';
+import { useUpdateOrderSubscription } from '@/api/orders/subscriptions';
 
 const OrderDetailScreen = () => {
 	const { id } = useLocalSearchParams();
 
 	const { data: order, isLoading, error } = useOrderDetails(getId(id));
+
+	useUpdateOrderSubscription(getId(id));
 
 	if (isLoading) {
 		return <ActivityIndicator />;
