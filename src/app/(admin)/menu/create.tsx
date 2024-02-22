@@ -12,6 +12,11 @@ import {
 	useUpdateProduct,
 } from '@/api/products';
 import { getId } from '@/lib/products';
+import * as FileSystem from 'expo-file-system';
+import { randomUUID } from 'expo-crypto';
+import { decode } from 'base64-arraybuffer';
+import { supabase } from '@/lib/supabase';
+import RemoteImage from '@/components/RemoteImage';
 
 const CreateProductScreen = () => {
 	const [name, setName] = useState('');
@@ -63,11 +68,13 @@ const CreateProductScreen = () => {
 		setErrors('');
 		return true;
 	};
-	const onCreate = () => {
+	const onCreate = async () => {
 		if (!validateInput()) return;
 
+		const imagePath = await uploadImage();
+
 		insertProduct(
-			{ name, price: parseFloat(price), image },
+			{ name, price: parseFloat(price), image: imagePath },
 			{
 				onSuccess: () => {
 					resetFields();
@@ -77,20 +84,34 @@ const CreateProductScreen = () => {
 		);
 	};
 
-	const onUpdate = () => {
+	const handleDeleteOldImage = async () => {
+		if (
+			UpdatingProduct?.image !== undefined &&
+			UpdatingProduct?.image !== null
+		) {
+			await supabase.storage
+				.from('product-images')
+				.remove([UpdatingProduct.image]);
+		}
+	};
+
+	const onUpdate = async () => {
 		if (!validateInput()) return;
+
+		const imagePath = await uploadImage();
 
 		updateProduct(
 			{
 				id: getId(id),
 				name,
 				price: parseFloat(price),
-				image,
+				image: imagePath,
 			},
 			{
 				onSuccess: () => {
 					resetFields();
 					router.back();
+					handleDeleteOldImage();
 				},
 			}
 		);
@@ -103,6 +124,25 @@ const CreateProductScreen = () => {
 	const resetFields = () => {
 		setName('');
 		setPrice('');
+	};
+
+	const uploadImage = async () => {
+		if (!image?.startsWith('file://')) {
+			return null;
+		}
+
+		const base64 = await FileSystem.readAsStringAsync(image, {
+			encoding: 'base64',
+		});
+		const filePath = `${randomUUID()}.png`;
+		const contentType = 'image/png';
+		const { data, error } = await supabase.storage
+			.from('product-images')
+			.upload(filePath, decode(base64), { contentType });
+		if (data) {
+			return data.path;
+		}
+		return null;
 	};
 
 	const pickImage = async () => {
@@ -146,8 +186,9 @@ const CreateProductScreen = () => {
 	return (
 		<View style={styles.container}>
 			<Stack.Screen options={{ title: textProduct + ' Product' }} />
-			<Image
-				source={{ uri: image ?? defaultPizzaImage }}
+			<RemoteImage
+				path={UpdatingProduct?.image ?? null}
+				fallback={defaultPizzaImage}
 				style={styles.image}
 			/>
 			<Text
