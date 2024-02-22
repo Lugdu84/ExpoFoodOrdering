@@ -1,5 +1,5 @@
 import { Image } from 'react-native';
-import React, { ComponentProps, useEffect, useMemo, useState } from 'react';
+import React, { ComponentProps, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 type RemoteImageProps = {
@@ -14,26 +14,30 @@ const RemoteImage = ({ path, fallback, ...imageProps }: RemoteImageProps) => {
 		if (!path) return;
 		(async () => {
 			setImage('');
-			const { data, error } = await supabase.storage
+			// const { data, error } = await supabase.storage
+			// 	.from('product-images')
+			// 	.download(path);
+
+			// if (error) {
+			// 	console.log(error);
+			// }
+
+			const { data } = supabase.storage
 				.from('product-images')
-				.download(path);
+				.getPublicUrl(path);
 
-			if (error) {
-				console.log(error);
-			}
-
+			// if (data) {
+			// 	const fr = new FileReader();
+			// 	fr.readAsDataURL(data);
+			// 	fr.onload = () => {
+			// 		setImage(fr.result as string);
+			// 	};
+			// }
 			if (data) {
-				const fr = new FileReader();
-				fr.readAsDataURL(data);
-				fr.onload = () => {
-					setImage(fr.result as string);
-				};
+				setImage(data.publicUrl);
 			}
 		})();
 	}, [path]);
-
-	if (!image) {
-	}
 
 	return (
 		<Image
