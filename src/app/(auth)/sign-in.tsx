@@ -21,6 +21,7 @@ const SignInScreen = () => {
 		if (error) Alert.alert('Error', error.message);
 		setLoading(false);
 	};
+
 	return (
 		<View style={styles.container}>
 			<Stack.Screen options={{ title: 'Sign In' }} />
