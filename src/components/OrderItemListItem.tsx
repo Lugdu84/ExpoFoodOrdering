@@ -3,9 +3,10 @@ import React from 'react';
 import { OrderItem, Product } from '@/types';
 import { defaultPizzaImage } from '@/constants/Images';
 import Colors from '@/constants/Colors';
+import RemoteImage from './RemoteImage';
 
 type OrderItemListItemProps = {
-	//FIXME: Whty Product | null ?
+	//FIXME: Why Product | null ?
 	orderItem: { products: Product | null } & OrderItem;
 };
 
@@ -13,9 +14,10 @@ const OrderItemListItem = ({ orderItem }: OrderItemListItemProps) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.leftBlock}>
-				<Image
+				<RemoteImage
 					style={styles.image}
-					source={{ uri: defaultPizzaImage }}
+					path={orderItem.products?.image as string | null}
+					fallback={defaultPizzaImage}
 				/>
 				<View style={styles.product}>
 					<Text style={styles.name}>{orderItem.products?.name}</Text>
